@@ -1,4 +1,4 @@
-package com.iou90.autoheightwebview;
+package com.dscj.autoheightwebview;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -11,15 +11,34 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AutoHeightWebViewPackage implements ReactPackage {
+
+
+    private RNWebViewModule module;
+    private AutoHeightWebViewManager viewManager;
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactApplicationContext) {
-        return new ArrayList<>();
+        module = new RNWebViewModule(reactApplicationContext);
+        module.setPackage(this);
+
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(module);
+
+        return modules;
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactApplicationContext) {
+        viewManager = new AutoHeightWebViewManager();
+        viewManager.setPackage(this);
         return Arrays.<ViewManager>asList(
                 new AutoHeightWebViewManager()
         );
+    }
+    public RNWebViewModule getModule() {
+        return module;
+    }
+
+    public AutoHeightWebViewManager getViewManager() {
+        return viewManager;
     }
 }

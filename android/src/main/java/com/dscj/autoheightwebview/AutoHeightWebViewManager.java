@@ -1,11 +1,10 @@
-package com.iou90.autoheightwebview;
+package com.dscj.autoheightwebview;
 
-import android.webkit.WebView;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.views.webview.ReactWebViewManager;
+import com.tencent.smtt.sdk.WebView;
 
 import java.util.Map;
 import javax.annotation.Nullable;

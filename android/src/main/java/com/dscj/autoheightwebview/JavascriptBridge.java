@@ -1,13 +1,14 @@
-package com.iou90.autoheightwebview;
+package com.dscj.autoheightwebview;
+
 
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
+import com.tencent.smtt.sdk.WebView;
 
 class JavascriptBridge {
     private WebView webView;
