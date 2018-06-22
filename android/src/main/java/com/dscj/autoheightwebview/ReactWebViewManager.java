@@ -1,4 +1,5 @@
-package com.dscj.autoheightwebview; /**
+package com.dscj.autoheightwebview;
+/**
  * Copyright (c) 2015-present, Facebook, Inc.
  * All rights reserved.
  * <p>
@@ -23,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
 
 import com.facebook.react.views.webview.WebViewConfig;
@@ -30,6 +32,7 @@ import com.facebook.react.views.webview.events.TopLoadingErrorEvent;
 import com.facebook.react.views.webview.events.TopLoadingFinishEvent;
 import com.facebook.react.views.webview.events.TopLoadingStartEvent;
 import com.facebook.react.views.webview.events.TopMessageEvent;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.sdk.CookieManager;
 import com.tencent.smtt.sdk.DownloadListener;
 import com.tencent.smtt.sdk.ValueCallback;
@@ -236,10 +239,9 @@ public class ReactWebViewManager extends SimpleViewManager<WebView> {
          * Activity Context is required for creation of dialogs internally by WebView
          * Reactive Native needed for access to ReactNative internal system functionality
          */
-        public ReactWebView(ReactWebViewManager reactWebViewManager, ThemedReactContext reactContext) {
+        public ReactWebView(ThemedReactContext reactContext) {
             super(reactContext);
 
-            mViewManager = reactWebViewManager;
 //            setWebChromeClient(new TencentX5WebViewChromeClient());
         }
 
@@ -317,35 +319,7 @@ public class ReactWebViewManager extends SimpleViewManager<WebView> {
             destroy();
         }
 
-        protected class TencentX5WebViewChromeClient extends WebChromeClient{
-            // For Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-                getModule().openFileChooseProcess(uploadMsg,null);
-            }
 
-            // For Android < 3.0
-            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-                getModule().openFileChooseProcess(uploadMsg,null);
-            }
-
-            // For Android  > 4.1.1
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-                getModule().openFileChooseProcess(uploadMsg,null);
-            }
-
-            // For Android  >= 5.0
-            public boolean onShowFileChooser(com.tencent.smtt.sdk.WebView webView,
-                                             ValueCallback<Uri[]> filePathCallback,
-                                             WebChromeClient.FileChooserParams fileChooserParams) {
-                getModule().openFileChooseProcess(null,filePathCallback);
-                return true;
-            }
-        }
-
-        private final ReactWebViewManager mViewManager;
-        public RNWebViewModule getModule() {
-            return mViewManager.getPackage().getModule();
-        }
     }
 
     public ReactWebViewManager() {
@@ -355,13 +329,6 @@ public class ReactWebViewManager extends SimpleViewManager<WebView> {
 //        };
     }
 
-    private AutoHeightWebViewPackage aPackage;
-    public void setPackage(AutoHeightWebViewPackage aPackage) {
-        this.aPackage = aPackage;
-    }
-    public AutoHeightWebViewPackage getPackage() {
-        return this.aPackage;
-    }
     public ReactWebViewManager(WebViewConfig webViewConfig) {
         mWebViewConfig = webViewConfig;
     }
@@ -373,22 +340,22 @@ public class ReactWebViewManager extends SimpleViewManager<WebView> {
 
     @Override
     protected WebView createViewInstance(ThemedReactContext reactContext) {
-        ReactWebView webView = new ReactWebView(this,reactContext);
-//    webView.setWebChromeClient(new WebChromeClient() {
-//      @Override
-//      public boolean onConsoleMessage(ConsoleMessage message) {
-//        if (ReactBuildConfig.DEBUG) {
-//          return super.onConsoleMessage(message);
-//        }
-//        // Ignore console logs in non debug builds.
-//        return true;
-//      }
-//
-//      @Override
-//      public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-//        callback.invoke(origin, true, false);
-//      }
-//    });
+        ReactWebView webView = new ReactWebView(reactContext);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage message) {
+                if (ReactBuildConfig.DEBUG) {
+                    return super.onConsoleMessage(message);
+                }
+                // Ignore console logs in non debug builds.
+                return true;
+            }
+
+            @Override
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                callback.invoke(origin, true, false);
+            }
+        });
         reactContext.addLifecycleEventListener(webView);
 //        mWebViewConfig.configWebView(webView);
         webView.getSettings().setBuiltInZoomControls(true);

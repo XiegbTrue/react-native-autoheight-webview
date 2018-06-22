@@ -11,34 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AutoHeightWebViewPackage implements ReactPackage {
-
-
-    private RNWebViewModule module;
-    private AutoHeightWebViewManager viewManager;
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactApplicationContext) {
-        module = new RNWebViewModule(reactApplicationContext);
-        module.setPackage(this);
-
-        List<NativeModule> modules = new ArrayList<>();
-        modules.add(module);
-
-        return modules;
+        return new ArrayList<>();
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactApplicationContext) {
-        viewManager = new AutoHeightWebViewManager();
-        viewManager.setPackage(this);
         return Arrays.<ViewManager>asList(
                 new AutoHeightWebViewManager()
         );
-    }
-    public RNWebViewModule getModule() {
-        return module;
-    }
-
-    public AutoHeightWebViewManager getViewManager() {
-        return viewManager;
     }
 }
